@@ -8,4 +8,6 @@ export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Gestión de Proyect
 
 export const APP_TITLE = `${APP_NAME} | ${ORG_NAME}`
 export const APP_SHORT_TITLE = `Proyectos ${ORG_SHORT}`
-export const APP_DESCRIPTION = `Aplicación de gestión y seguimiento de proyectos de la ${ORG_NAME}.`
+// Sin artículo delante de ORG_NAME: el nombre de cada dirección trae el suyo
+// y "de la Decanato" quedaba mal.
+export const APP_DESCRIPTION = `Gestión y seguimiento de proyectos — ${ORG_NAME}`
