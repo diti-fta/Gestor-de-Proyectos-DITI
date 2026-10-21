@@ -2,14 +2,14 @@
 
 import { useMemo, useState } from "react"
 import {
-  LogOut, Plus, Search, Link2, ExternalLink, Archive, ArchiveRestore, Pencil, Eye,
+  LogOut, Plus, Search, Link2, ExternalLink, Archive, ArchiveRestore, Pencil, Eye, Trash2,
   BarChart3, LayoutList, Settings, ArrowUp, ArrowDown, ArrowUpDown,
 } from "lucide-react"
 import { APP_NAME, ORG_NAME } from "@/lib/branding"
 import type { Project, ProjectStatus, Role, Responsable } from "@/lib/types"
 import { PROJECT_STATUSES } from "@/lib/types"
 import { logout } from "@/app/actions/auth"
-import { setArchived } from "@/app/actions/projects"
+import { setArchived, deleteProject } from "@/app/actions/projects"
 import { Button } from "@/components/ui/button"
 import { StatusBadge } from "@/components/status-badge"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -356,6 +356,9 @@ export function Dashboard({
                             <Button variant="ghost" size="icon-sm" onClick={() => setArchived(p.id, !p.archived)} aria-label={p.archived ? `Restaurar ${p.name}` : `Archivar ${p.name}`}>
                               {p.archived ? <ArchiveRestore /> : <Archive />}
                             </Button>
+                            <Button variant="ghost" size="icon-sm" onClick={() => { if (confirm(`¿Eliminar "${p.name}" permanentemente?`)) deleteProject(p.id) }} aria-label={`Eliminar ${p.name}`} className="text-destructive hover:text-destructive">
+                              <Trash2 />
+                            </Button>
                           </>
                         ) : null}
                       </div>
@@ -508,6 +511,15 @@ export function Dashboard({
                                     aria-label={p.archived ? `Restaurar ${p.name}` : `Archivar ${p.name}`}
                                   >
                                     {p.archived ? <ArchiveRestore /> : <Archive />}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon-sm"
+                                    onClick={() => { if (confirm(`¿Eliminar "${p.name}" permanentemente?`)) deleteProject(p.id) }}
+                                    aria-label={`Eliminar ${p.name}`}
+                                    className="text-destructive hover:text-destructive"
+                                  >
+                                    <Trash2 />
                                   </Button>
                                 </>
                               ) : null}

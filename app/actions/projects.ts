@@ -184,6 +184,14 @@ export async function setArchived(id: number, archived: boolean) {
   revalidatePath("/")
 }
 
+export async function deleteProject(id: number) {
+  await requireAdmin()
+  await sql`DELETE FROM attachments WHERE project_id = ${id}`
+  await sql`DELETE FROM change_history WHERE project_id = ${id}`
+  await sql`DELETE FROM projects WHERE id = ${id}`
+  revalidatePath("/")
+}
+
 export async function addAttachment(formData: FormData) {
   await requireAdmin()
   const actor = await actorLabel()
