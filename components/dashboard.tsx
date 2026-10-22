@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import {
-  LogOut, Plus, Search, Link2, ExternalLink, Archive, ArchiveRestore, Pencil, Eye, Trash2,
+  LogOut, Plus, Search, Link2, ExternalLink, Archive, ArchiveRestore, Pencil, Eye, Trash2, Download,
   BarChart3, LayoutList, Settings, ArrowUp, ArrowDown, ArrowUpDown,
 } from "lucide-react"
 import { APP_NAME, ORG_NAME } from "@/lib/branding"
@@ -112,6 +112,31 @@ export function Dashboard({
       minute: "2-digit",
       timeZone: "America/Argentina/Buenos_Aires",
     })
+
+  const exportCsv = () => {
+    const escape = (v: string) => `"${v.replace(/"/g, '""')}"`
+    const header = ["Proyecto", "Estado", "Archivado", "Responsables", "Fecha límite", "Notas", "Enlaces", "Última actualización", "Creado"]
+    const rows = filtered.map((p) => [
+      escape(p.name),
+      escape(p.status),
+      p.archived ? "Sí" : "No",
+      escape(p.responsables.join(", ")),
+      p.deadline ?? "",
+      escape(p.notas),
+      escape(p.attachments.map((a) => a.url).join(" | ")),
+      formatDate(p.updatedAt),
+      formatDate(p.createdAt),
+    ])
+    const bom = "﻿"
+    const csv = bom + [header.join(","), ...rows.map((r) => r.join(","))].join("\n")
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `proyectos-diti-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="min-h-dvh bg-background">
@@ -248,6 +273,11 @@ export function Dashboard({
                     <option value="archivados">Archivados</option>
                     <option value="todos">Todos</option>
                   </select>
+
+                  <Button variant="outline" onClick={exportCsv}>
+                    <Download />
+                    Exportar CSV
+                  </Button>
 
                   {isAdmin ? (
                     <Button
